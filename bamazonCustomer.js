@@ -1,9 +1,58 @@
-// ===== REQUIRED NPMS ===== //
+// ===== REQUIRED NPMS/DEPENDENCIES ===== //
+var mysql = require("mysql");
+var inquirer = require("inquirer");
+var Table = require('cli-table');
+
+// ===== DATABASE + SERVER CONNECTION ===== //
+var connection = mysql.createConnection({
+    host: "localhost",
+    port: 3306,
+    // Your username
+    user: "root",
+    // Your password
+    password: "",
+    database: "bamazon_DB"
+  });
+
+  // connect to the mysql server and sql database
+connection.connect(function(err) {
+    if (err) throw err;
+    // run the start function after the connection is made to prompt the user
+    startSale();
+  });
+
+
+  // ===== START APP ===== //
+
+    // VARIABLES //
+ const purchase = [];
+
+  // 1 - Display all items available for sale w/ ids, names, and prices
+  connection.query ('SELECT ProdID, ProdName, Price FROM Products', function(err, result){
+
+  });
+
+  function purchase() {
+      inquirer
+        .prompt ({
+            name: "productID",
+            type: "input",
+            message: "Hello! What is the Product ID for the item you wish to purchase today?"
+        },
+        {
+            name: "purchaseQty",
+            type: "input",
+            message: "Thank you! How many would you like to purchase?"
+        })
+        .then (function(){
+            // code goes here
+        });
+  }
 
 
 // ===== TO DOs ===== //
     // === BASIC REQUIREMENTS === //
-    // 1 - Display all items available for sale w/ ids, names, and prices
+    
     // 2 - Prompt user with two messages (inquirer)
         // 2a - ask for ID of the product they wish to buy
         // 2b - ask how many units they want to buy
@@ -23,7 +72,7 @@
 
 
 
-        
+
 
     // === CUSTOMER CHALLENGE === //
         // ADD product_sales, value updated with each indv prod total revenue from each sale
