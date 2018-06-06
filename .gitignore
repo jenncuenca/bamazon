@@ -1,6 +1,8 @@
-Created by https://www.gitignore.io/api/macos,windows
+# Created by https://www.gitignore.io/api/macos,windows
 
 ### macOS ###
+node_modules
+.env
 *.DS_Store
 .AppleDouble
 .LSOverride
