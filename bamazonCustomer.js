@@ -50,7 +50,7 @@ var createTable = function(){
         console.log("==============/// WELCOME TO BAMAZON ///===============")
         console.log(table.toString());
 
-        salePrompt();
+        salePrompt(res);
         }
     )};
 
@@ -69,18 +69,19 @@ var createTable = function(){
             message: "Thank you! How many would you like to purchase?"
       }).then (function(answer){
     
-        var purchaseItem = (answer.id);
+        var purchaseItem = (answer);
+        var selectedItemIndex = res.findIndex(function(obj){return obj.ItemID == purchaseItem.id});
         var saleQty = parseInt(answer.qty);
-        var saleTotal = parseFloat(((res[purchaseItem].Price)*saleQty).toFixed(2));
+        var saleTotal = parseFloat(((res[selectedItemIndex].Price)*saleQty).toFixed(2));
 
-        console.log("saleTotal");
+      
 
         //stock qty check
-        if (res[purchaseItem].stockQty >= saleQty){
+        if (res[selectedItemIndex].stockQty >= saleQty){
             //qty update with purchase
             connection.query("UPDATE Products SET ? WHERE ?", [
                 {
-                    stockQty: (res[purchaseItem].stockQty - saleQty)
+                    stockQty: (res[selectedItemIndex].stockQty - saleQty)
                 },
                 {
                     ItemID: answer.id
@@ -95,20 +96,20 @@ var createTable = function(){
             console.log("Sorry, Insuffecient quantities in stock!");
         }
 
-        restart();
+        restart(res);
 
         });
   };
 
 //=== Prompts user if they would like to make an additonal purchase ===//
-function restart(){
+function restart(res){
     inquirer.prompt([{
         type: "confirm",
         name: "addlSale",
         message: "Would you like to purchase an additonal item(s)"
     }]).then(function(answer){
         if (answer.addlSale){
-            salePrompt();
+            salePrompt(res);
         } else{
             console.log("Have a nice day! Thank you for choosing Bamazon!")
         }
