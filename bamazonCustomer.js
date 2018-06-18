@@ -17,7 +17,7 @@ var connection = mysql.createConnection({
   // connect to the mysql server and sql database
 connection.connect(function(err) {
     if (err) throw err;
-    console.log ("CONNECTION TO SERVER SUCCESSFUL!")
+    console.log ("CONNECTION TO SERVER SUCCESSFUL...")
 
     // run the createTable function after the connection is made to create table
     createTable();
@@ -47,6 +47,7 @@ var createTable = function(){
         }
 
         // DISPLAYS TABLE IN CONSOLE
+        console.log("==============/// WELCOME TO BAMAZON ///===============")
         console.log(table.toString());
 
         salePrompt();
@@ -54,23 +55,65 @@ var createTable = function(){
     )};
 
 //=== FUNCTION TO PROMPT USER TO START A SALE ===//
-//   function salePromt(res) {
-//       // ASKS USER WHAT THEY WOULD LIKE TO PURCHASE
-//       inquirer.prompt ({
-//             name: "productID",
-//             type: "input",
-//             message: "Hello! What is the Product ID for the item you wish to purchase today? [Type 'Q' TO QUIT]"
-//         }
-//         // {
-//         //     name: "purchaseQty",
-//         //     type: "input",
-//         //     message: "Thank you! How many would you like to purchase?"
-//         // })
-//         .then (function(answer){
-//             var product 
-//         });
-//   }
+  function salePrompt(res) {
+      // ASKS USER WHAT THEY WOULD LIKE TO PURCHASE
+      inquirer.prompt ({
+            name: "id",
+            type: "input",
+            message: "Hello! What is the Product ID for the item you wish to purchase today?"
+        },
+        // ASKS USER FOR QTY THEY WISH TO PURCHASE
+        {
+            name: "qty",
+            type: "input",
+            message: "Thank you! How many would you like to purchase?"
+      }).then (function(answer){
+    
+        var purchaseItem = (answer.id);
+        var saleQty = parseInt(answer.qty);
+        var saleTotal = parseFloat(((res[purchaseItem].Price)*saleQty).toFixed(2));
 
+        console.log("saleTotal");
+
+        //stock qty check
+        if (res[purchaseItem].stockQty >= saleQty){
+            //qty update with purchase
+            connection.query("UPDATE Products SET ? WHERE ?", [
+                {
+                    stockQty: (res[purchaseItem].stockQty - saleQty)
+                },
+                {
+                    ItemID: answer.id
+                }
+            ], function (err, result){
+                if(err) throw err;
+
+                console.log("Purchase Successful! Your total is " + saleTotal + ". Your item(s) will be shipped within 3-5 business days. Thank you for choosing Bamazon!");
+            });
+        } 
+        else {
+            console.log("Sorry, Insuffecient quantities in stock!");
+        }
+
+        restart();
+
+        });
+  };
+
+//=== Prompts user if they would like to make an additonal purchase ===//
+function restart(){
+    inquirer.prompt([{
+        type: "confirm",
+        name: "addlSale",
+        message: "Would you like to purchase an additonal item(s)"
+    }]).then(function(answer){
+        if (answer.addlSale){
+            salePrompt();
+        } else{
+            console.log("Have a nice day! Thank you for choosing Bamazon!")
+        }
+    });
+}
 
 // // ===== TO DOs ===== //
 //     // === BASIC REQUIREMENTS === //
@@ -85,18 +128,7 @@ var createTable = function(){
 //         // 4a - update sql database to reflect remaining qty
 //         // 4b - show total cost of purchase
 
-
-
-
-
-
-
-
-
-
-
-
-    // === CUSTOMER CHALLENGE === //
+// === CUSTOMER CHALLENGE === //
         // ADD product_sales, value updated with each indv prod total revenue from each sale
         // UPDATE so that when customer purchases anything, price of the product multiplied by qty purchase is added to 'product_sales' for that prod
         // ensure app still updats inventory listed in "products"
