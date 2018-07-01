@@ -73,6 +73,7 @@ var createTable = function(){
         var selectedItemIndex = res.findIndex(function(obj){return obj.ItemID == purchaseItem.id});
         var saleQty = parseInt(answer.qty);
         var saleTotal = parseFloat(((res[selectedItemIndex].Price)*saleQty).toFixed(2));
+        var stockQty = res.findIndex(function(obj){return selectedItemIndex == obj.Qty});
 
       
 
@@ -94,6 +95,11 @@ var createTable = function(){
         } 
         else {
             console.log("Sorry, Insuffecient quantities in stock!");
+            console.log(stockQty);
+            console.log (selectedItemIndex);
+            console.log(res);
+        
+
         }
 
         restart(res);
