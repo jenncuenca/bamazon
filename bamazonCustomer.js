@@ -73,6 +73,8 @@ var createTable = function(){
         var selectedItemIndex = res.findIndex(function(obj){return obj.ItemID == purchaseItem.id});
         var saleQty = parseInt(answer.qty);
         var saleTotal = parseFloat(((res[selectedItemIndex].Price)*saleQty).toFixed(2));
+
+        //TO DO: Get function to grab article qty of the chosen id number
         var stockQty = res.findIndex(function(obj){return selectedItemIndex == obj.Qty});
 
       
