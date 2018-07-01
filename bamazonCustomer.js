@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
     // Your username
     user: "root",
     // Your password
-    password: "",
+    password: "qwerty123",
     database: "bamazon_DB"
   });
 
@@ -57,7 +57,7 @@ var createTable = function(){
 //=== FUNCTION TO PROMPT USER TO START A SALE ===//
   function salePrompt(res) {
       // ASKS USER WHAT THEY WOULD LIKE TO PURCHASE
-      inquirer.prompt ({
+      inquirer.prompt ([{
             name: "id",
             type: "input",
             message: "Hello! What is the Product ID for the item you wish to purchase today?"
@@ -67,7 +67,7 @@ var createTable = function(){
             name: "qty",
             type: "input",
             message: "Thank you! How many would you like to purchase?"
-      }).then (function(answer){
+      }]).then (function(answer){
     
         var purchaseItem = (answer);
         var selectedItemIndex = res.findIndex(function(obj){return obj.ItemID == purchaseItem.id});
