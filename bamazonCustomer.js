@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
     // Your username
     user: "root",
     // Your password
-    password: "qwerty123",
+    password: "",
     database: "bamazon_DB"
   });
 
@@ -69,22 +69,28 @@ var createTable = function(){
             message: "Thank you! How many would you like to purchase?"
       }]).then (function(answer){
     
+        // PURCHASE VARIABLES
         var purchaseItem = (answer);
         var selectedItemIndex = res.findIndex(function(obj){return obj.ItemID == purchaseItem.id});
+        var price = res[selectedItemIndex].Price;
         var saleQty = parseInt(answer.qty);
-        var saleTotal = parseFloat(((selectedItemIndex.Price)*saleQty).toFixed(2));
+        var saleTotal = price*saleQty;
+        var stockQty = res[selectedItemIndex].Qty;
+        
+        //console.log(typeof price)
+        //console.log(typeof saleQty)
+        
 
-        //stockQty still appearing undefined with insufficient stock
-        var stockQty = res.findIndex(function(obj){return obj.Qty == purchaseItem.Qty});
-
-      
+        //console.log(saleTotal)
+        //console.log(price)
+        //console.log(saleQty)
 
         //stock qty check
-        if (res[selectedItemIndex].stockQty >= saleQty){
+        if (stockQty >= saleQty){
             //qty update with purchase
             connection.query("UPDATE Products SET ? WHERE ?", [
                 {
-                    stockQty: (selectedItemIndex.stockQty - saleQty)
+                    Qty: (stockQty - saleQty)
                 },
                 {
                     ItemID: answer.id
@@ -93,20 +99,17 @@ var createTable = function(){
                 if(err) throw err;
 
                 console.log("Purchase Successful! Your total is " + saleTotal + ". Your item(s) will be shipped within 3-5 business days. Thank you for choosing Bamazon!");
+
+                restart(res); 
             });
         } 
         else {
             console.log("Sorry, Insuffecient quantities in stock!");
-            console.log(stockQty);
-            console.log (selectedItemIndex);
-            console.log (purchaseItem.Qty)
-            console.log(res);
-        
 
+            restart(res); 
         }
 
-        restart(res);
-
+        console.log("done")
         });
   };
 
