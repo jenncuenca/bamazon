@@ -72,10 +72,10 @@ var createTable = function(){
         var purchaseItem = (answer);
         var selectedItemIndex = res.findIndex(function(obj){return obj.ItemID == purchaseItem.id});
         var saleQty = parseInt(answer.qty);
-        var saleTotal = parseFloat(((res[selectedItemIndex].Price)*saleQty).toFixed(2));
+        var saleTotal = parseFloat(((selectedItemIndex.Price)*saleQty).toFixed(2));
 
-        //TO DO: Get function to grab article qty of the chosen id number
-        var stockQty = res.findIndex(function(obj){return selectedItemIndex == obj.Qty});
+        //stockQty still appearing undefined with insufficient stock
+        var stockQty = res.findIndex(function(obj){return obj.Qty == purchaseItem.Qty});
 
       
 
@@ -84,7 +84,7 @@ var createTable = function(){
             //qty update with purchase
             connection.query("UPDATE Products SET ? WHERE ?", [
                 {
-                    stockQty: (res[selectedItemIndex].stockQty - saleQty)
+                    stockQty: (selectedItemIndex.stockQty - saleQty)
                 },
                 {
                     ItemID: answer.id
@@ -99,6 +99,7 @@ var createTable = function(){
             console.log("Sorry, Insuffecient quantities in stock!");
             console.log(stockQty);
             console.log (selectedItemIndex);
+            console.log (purchaseItem.Qty)
             console.log(res);
         
 
