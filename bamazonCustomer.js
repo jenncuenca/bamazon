@@ -74,16 +74,8 @@ var createTable = function(){
         var selectedItemIndex = res.findIndex(function(obj){return obj.ItemID == purchaseItem.id});
         var price = res[selectedItemIndex].Price;
         var saleQty = parseInt(answer.qty);
-        var saleTotal = price*saleQty;
+        var saleTotal = (price*saleQty).toFixed(2);
         var stockQty = res[selectedItemIndex].Qty;
-        
-        //console.log(typeof price)
-        //console.log(typeof saleQty)
-        
-
-        //console.log(saleTotal)
-        //console.log(price)
-        //console.log(saleQty)
 
         //stock qty check
         if (stockQty >= saleQty){
@@ -124,6 +116,7 @@ function restart(res){
             salePrompt(res);
         } else{
             console.log("Have a nice day! Thank you for choosing Bamazon!")
+
         }
     });
 }
